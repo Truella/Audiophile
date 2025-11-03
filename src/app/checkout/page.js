@@ -1,9 +1,459 @@
-import React from 'react'
+"use client";
+import { useCart } from "@/context/CartContext";
+import { useState } from "react";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-export default function Checkout() {
-  return (
-    <div>
-      Cart
-    </div>
-  )
+export default function CheckoutPage() {
+	const { cart, getCartTotal, clearCart, sessionId } = useCart();
+	const router = useRouter();
+	const [showConfirmation, setShowConfirmation] = useState(false);
+	const [paymentMethod, setPaymentMethod] = useState("e-money");
+	const [isProcessing, setIsProcessing] = useState(false);
+	const [orderNumber, setOrderNumber] = useState("");
+
+	const processOrder = useMutation(api.orders.processOrder);
+
+	const [formData, setFormData] = useState({
+		name: "",
+		email: "",
+		phone: "",
+		address: "",
+		zip: "",
+		city: "",
+		country: "",
+		eMoneyNumber: "",
+		eMoneyPin: "",
+	});
+
+	const subtotal = getCartTotal();
+	const shipping = 50;
+	const vat = Math.round(subtotal * 0.2);
+	const grandTotal = subtotal + shipping;
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		setIsProcessing(true);
+
+		try {
+			// Generate order number
+			const orderNum = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+			setOrderNumber(orderNum);
+
+			// Process order (creates order and sends email)
+			await processOrder({
+				orderNumber: orderNum,
+				customerInfo: {
+					name: formData.name,
+					email: formData.email,
+					phone: formData.phone,
+					address: formData.address,
+					zip: formData.zip,
+					city: formData.city,
+					country: formData.country,
+				},
+				paymentMethod,
+				items: cart.map((item) => ({
+					productId: item.productId,
+					name: item.name,
+					price: item.price,
+					quantity: item.quantity,
+					image: item.image,
+				})),
+				subtotal,
+				shipping,
+				vat,
+				total: grandTotal,
+			});
+
+			// Clear cart and show confirmation
+			await clearCart();
+			setShowConfirmation(true);
+		} catch (error) {
+			console.error("Order processing failed:", error);
+			alert("Failed to process order. Please try again.");
+		} finally {
+			setIsProcessing(false);
+		}
+	};
+
+	const handleConfirmationClose = () => {
+		setShowConfirmation(false);
+		router.push("/");
+	};
+
+	if (cart.length === 0 && !showConfirmation) {
+		return (
+			<div className="min-h-screen bg-gray-50 flex items-center justify-center">
+				<div className="text-center">
+					<h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
+					<Link href="/">
+						<button className="bg-orange-600 text-white px-8 py-3 font-bold uppercase">
+							Continue Shopping
+						</button>
+					</Link>
+				</div>
+			</div>
+		);
+	}
+
+	return (
+		<div className="min-h-screen bg-gray-50">
+			<div className="max-w-6xl mx-auto px-6 py-8">
+				<Link href="/" className="text-gray-600 hover:text-gray-900">
+					Go back
+				</Link>
+
+				<form
+					onSubmit={handleSubmit}
+					className="grid lg:grid-cols-3 gap-8 mt-8"
+				>
+					{/* Checkout Form */}
+					<div className="lg:col-span-2 bg-white rounded-lg p-8 space-y-8">
+						<h1 className="text-3xl font-bold uppercase">Checkout</h1>
+
+						{/* Billing Details */}
+						<div className="space-y-4">
+							<h2 className="text-orange-600 text-sm font-bold uppercase tracking-wider">
+								Billing Details
+							</h2>
+
+							<div className="grid md:grid-cols-2 gap-4">
+								<div>
+									<label className="block text-xs font-bold mb-2">Name</label>
+									<input
+										type="text"
+										required
+										placeholder="Alexei Ward"
+										value={formData.name}
+										onChange={(e) =>
+											setFormData({ ...formData, name: e.target.value })
+										}
+										className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
+									/>
+								</div>
+
+								<div>
+									<label className="block text-xs font-bold mb-2">
+										Email Address
+									</label>
+									<input
+										type="email"
+										required
+										placeholder="alexei@mail.com"
+										value={formData.email}
+										onChange={(e) =>
+											setFormData({ ...formData, email: e.target.value })
+										}
+										className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
+									/>
+								</div>
+
+								<div>
+									<label className="block text-xs font-bold mb-2">
+										Phone Number
+									</label>
+									<input
+										type="tel"
+										required
+										placeholder="+1 202-555-0136"
+										value={formData.phone}
+										onChange={(e) =>
+											setFormData({ ...formData, phone: e.target.value })
+										}
+										className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
+									/>
+								</div>
+							</div>
+						</div>
+
+						{/* Shipping Info */}
+						<div className="space-y-4">
+							<h2 className="text-orange-600 text-sm font-bold uppercase tracking-wider">
+								Shipping Info
+							</h2>
+
+							<div className="space-y-4">
+								<div>
+									<label className="block text-xs font-bold mb-2">
+										Address
+									</label>
+									<input
+										type="text"
+										required
+										placeholder="1137 Williams Avenue"
+										value={formData.address}
+										onChange={(e) =>
+											setFormData({ ...formData, address: e.target.value })
+										}
+										className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
+									/>
+								</div>
+
+								<div className="grid md:grid-cols-2 gap-4">
+									<div>
+										<label className="block text-xs font-bold mb-2">
+											ZIP Code
+										</label>
+										<input
+											type="text"
+											required
+											placeholder="10001"
+											value={formData.zip}
+											onChange={(e) =>
+												setFormData({ ...formData, zip: e.target.value })
+											}
+											className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
+										/>
+									</div>
+
+									<div>
+										<label className="block text-xs font-bold mb-2">City</label>
+										<input
+											type="text"
+											required
+											placeholder="New York"
+											value={formData.city}
+											onChange={(e) =>
+												setFormData({ ...formData, city: e.target.value })
+											}
+											className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
+										/>
+									</div>
+
+									<div>
+										<label className="block text-xs font-bold mb-2">
+											Country
+										</label>
+										<input
+											type="text"
+											required
+											placeholder="United States"
+											value={formData.country}
+											onChange={(e) =>
+												setFormData({ ...formData, country: e.target.value })
+											}
+											className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
+										/>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						{/* Payment Details */}
+						<div className="space-y-4">
+							<h2 className="text-orange-600 text-sm font-bold uppercase tracking-wider">
+								Payment Details
+							</h2>
+
+							<div className="grid md:grid-cols-2 gap-4">
+								<div>
+									<label className="block text-xs font-bold mb-2">
+										Payment Method
+									</label>
+								</div>
+
+								<div className="space-y-2">
+									<label className="flex items-center gap-3 px-4 py-3 border border-gray-300 rounded cursor-pointer hover:border-orange-600">
+										<input
+											type="radio"
+											name="payment"
+											value="e-money"
+											checked={paymentMethod === "e-money"}
+											onChange={(e) => setPaymentMethod(e.target.value)}
+											className="accent-orange-600"
+										/>
+										<span className="text-sm font-bold">e-Money</span>
+									</label>
+
+									<label className="flex items-center gap-3 px-4 py-3 border border-gray-300 rounded cursor-pointer hover:border-orange-600">
+										<input
+											type="radio"
+											name="payment"
+											value="cash"
+											checked={paymentMethod === "cash"}
+											onChange={(e) => setPaymentMethod(e.target.value)}
+											className="accent-orange-600"
+										/>
+										<span className="text-sm font-bold">Cash on Delivery</span>
+									</label>
+								</div>
+							</div>
+
+							{paymentMethod === "e-money" && (
+								<div className="grid md:grid-cols-2 gap-4">
+									<div>
+										<label className="block text-xs font-bold mb-2">
+											e-Money Number
+										</label>
+										<input
+											type="text"
+											required
+											placeholder="238521993"
+											value={formData.eMoneyNumber}
+											onChange={(e) =>
+												setFormData({
+													...formData,
+													eMoneyNumber: e.target.value,
+												})
+											}
+											className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
+										/>
+									</div>
+
+									<div>
+										<label className="block text-xs font-bold mb-2">
+											e-Money PIN
+										</label>
+										<input
+											type="text"
+											required
+											placeholder="6891"
+											value={formData.eMoneyPin}
+											onChange={(e) =>
+												setFormData({ ...formData, eMoneyPin: e.target.value })
+											}
+											className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
+										/>
+									</div>
+								</div>
+							)}
+
+							{paymentMethod === "cash" && (
+								<p className="text-gray-600 text-sm">
+									The 'Cash on Delivery' option enables you to pay in cash when
+									our delivery courier arrives at your residence. Just make sure
+									your address is correct so that your order will not be
+									cancelled.
+								</p>
+							)}
+						</div>
+					</div>
+
+					{/* Summary */}
+					<div className="lg:col-span-1">
+						<div className="bg-white rounded-lg p-6 space-y-6 sticky top-8">
+							<h2 className="text-lg font-bold uppercase">Summary</h2>
+
+							<div className="space-y-4">
+								{cart.map((item) => (
+									<div key={item.productId} className="flex items-center gap-4">
+										<div className="relative w-16 h-16 bg-gray-100 rounded overflow-hidden flex-shrink-0">
+											<Image
+												src={item.image || ""}
+												alt={item.name}
+												fill
+												className="object-contain p-2"
+											/>
+										</div>
+
+										<div className="flex-1 min-w-0">
+											<h3 className="font-bold text-sm truncate">
+												{item.name
+													.replace("Headphones", "")
+													.replace("Earphones", "")
+													.replace("Speaker", "")}
+											</h3>
+											<p className="text-gray-600 text-sm">
+												$ {item.price.toLocaleString()}
+											</p>
+										</div>
+
+										<span className="text-gray-600 font-bold text-sm">
+											x{item.quantity}
+										</span>
+									</div>
+								))}
+							</div>
+
+							<div className="space-y-2 pt-4">
+								<div className="flex justify-between text-sm">
+									<span className="text-gray-600 uppercase">Total</span>
+									<span className="font-bold">
+										$ {subtotal.toLocaleString()}
+									</span>
+								</div>
+
+								<div className="flex justify-between text-sm">
+									<span className="text-gray-600 uppercase">Shipping</span>
+									<span className="font-bold">$ {shipping}</span>
+								</div>
+
+								<div className="flex justify-between text-sm">
+									<span className="text-gray-600 uppercase">
+										VAT (Included)
+									</span>
+									<span className="font-bold">$ {vat.toLocaleString()}</span>
+								</div>
+
+								<div className="flex justify-between pt-4">
+									<span className="text-gray-600 uppercase text-sm">
+										Grand Total
+									</span>
+									<span className="text-orange-600 font-bold text-lg">
+										$ {grandTotal.toLocaleString()}
+									</span>
+								</div>
+							</div>
+
+							<button
+								type="submit"
+								disabled={isProcessing}
+								className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 font-bold uppercase tracking-wider transition disabled:opacity-50"
+							>
+								{isProcessing ? "Processing..." : "Continue & Pay"}
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+
+			{/* Confirmation Modal */}
+			{showConfirmation && (
+				<>
+					<div className="fixed inset-0 bg-black bg-opacity-50 z-40" />
+					<div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+						<div className="bg-white rounded-lg p-8 max-w-md w-full">
+							<div className="w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center mb-6">
+								<svg
+									className="w-8 h-8 text-white"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M5 13l4 4L19 7"
+									/>
+								</svg>
+							</div>
+
+							<h2 className="text-2xl font-bold uppercase mb-4">
+								Thank you
+								<br />
+								for your order
+							</h2>
+
+							<p className="text-gray-600 mb-2">Order #{orderNumber}</p>
+							<p className="text-gray-600 mb-6">
+								You will receive an email confirmation shortly.
+							</p>
+
+							<button
+								onClick={handleConfirmationClose}
+								className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 font-bold uppercase tracking-wider transition"
+							>
+								Back to Home
+							</button>
+						</div>
+					</div>
+				</>
+			)}
+		</div>
+	);
 }
