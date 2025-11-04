@@ -1,3 +1,5 @@
+
+/*import Image from "next/image";
 import React from "react";
 
 export default function ProductDescGallery() {
@@ -14,6 +16,7 @@ export default function ProductDescGallery() {
 						/>
 					</div>
 					<div className="relative aspect-square rounded-lg overflow-hidden">
+						
 						<Image
 							src={product.gallery.second.desktop}
 							alt="Gallery 2"
@@ -35,4 +38,4 @@ export default function ProductDescGallery() {
 			</div>
 		</div>
 	);
-}
+} */

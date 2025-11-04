@@ -13,6 +13,7 @@ export default function Footer() {
 							src={"./assets/shared/desktop/logo.svg"}
 							width={100}
 							height={100}
+							alt="logo"
 						/>
 					</Link>
 					{/* Navigation */}

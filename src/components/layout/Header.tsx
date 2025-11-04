@@ -20,7 +20,7 @@ export default function Header() {
 				{!isOpen ? <MenuIcon size={32} /> : <X size={32} />}
 			</div>
 			<Image
-				src={"./assets/shared/desktop/logo.svg"}
+				src={"/assets/shared/desktop/logo.svg"}
 				width={100}
 				height={100}
 			/>

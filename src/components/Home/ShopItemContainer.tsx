@@ -3,7 +3,7 @@ import React from "react";
 
 export default function ShopItemContainer({ imgUrl, text }) {
 	return (
-		<div className="min-w-[327px] w-[327px] h-[165px] lg:w-[350px] lg:h-[204px] bg-off-white relative my-[64px] lg:my-[200px] rounded-lg flex flex-col items-center justify-end p-[30px] gap-[15px]">
+		<div className="min-w-[327px] w-[327px] h-[165px] lg:w-[350px] lg:h-[204px] bg-off-white relative lg:my-[200px] rounded-lg flex flex-col items-center justify-end p-[30px] gap-[15px]">
 			<div>
 				<Image
 					src={`/assets/shared/${imgUrl}`}

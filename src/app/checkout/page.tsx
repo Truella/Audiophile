@@ -1,23 +1,37 @@
 "use client";
 import { useCart } from "@/context/CartContext";
-import { useState } from "react";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
+import { useState, FormEvent, ChangeEvent } from "react";
+import { useAction } from "convex/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { api } from "../../../convex/_generated/api";
+
+interface FormData {
+	name: string;
+	email: string;
+	phone: string;
+	address: string;
+	zip: string;
+	city: string;
+	country: string;
+	eMoneyNumber: string;
+	eMoneyPin: string;
+}
+
+type PaymentMethod = "e-money" | "cash";
 
 export default function CheckoutPage() {
 	const { cart, getCartTotal, clearCart, sessionId } = useCart();
 	const router = useRouter();
-	const [showConfirmation, setShowConfirmation] = useState(false);
-	const [paymentMethod, setPaymentMethod] = useState("e-money");
-	const [isProcessing, setIsProcessing] = useState(false);
-	const [orderNumber, setOrderNumber] = useState("");
+	const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
+	const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("e-money");
+	const [isProcessing, setIsProcessing] = useState<boolean>(false);
+	const [orderNumber, setOrderNumber] = useState<string>("");
 
-	const processOrder = useMutation(api.orders.processOrder);
+	const processOrder = useAction(api.orders.processOrder);
 
-	const [formData, setFormData] = useState({
+	const [formData, setFormData] = useState<FormData>({
 		name: "",
 		email: "",
 		phone: "",
@@ -34,7 +48,7 @@ export default function CheckoutPage() {
 	const vat = Math.round(subtotal * 0.2);
 	const grandTotal = subtotal + shipping;
 
-	const handleSubmit = async (e) => {
+	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setIsProcessing(true);
 
@@ -43,8 +57,8 @@ export default function CheckoutPage() {
 			const orderNum = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
 			setOrderNumber(orderNum);
 
-			// Process order (creates order and sends email)
-			await processOrder({
+			// Prepare order data
+			const orderData = {
 				orderNumber: orderNum,
 				customerInfo: {
 					name: formData.name,
@@ -67,7 +81,23 @@ export default function CheckoutPage() {
 				shipping,
 				vat,
 				total: grandTotal,
+			};
+
+			// Process order in Convex
+			await processOrder(orderData);
+
+			// Send confirmation email
+			const emailResponse = await fetch("/api/send-order-confirmation", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(orderData),
 			});
+
+			if (!emailResponse.ok) {
+				console.error("Failed to send confirmation email");
+			}
 
 			// Clear cart and show confirmation
 			await clearCart();
@@ -83,6 +113,10 @@ export default function CheckoutPage() {
 	const handleConfirmationClose = () => {
 		setShowConfirmation(false);
 		router.push("/");
+	};
+
+	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
 	if (cart.length === 0 && !showConfirmation) {
@@ -126,12 +160,11 @@ export default function CheckoutPage() {
 									<label className="block text-xs font-bold mb-2">Name</label>
 									<input
 										type="text"
+										name="name"
 										required
 										placeholder="Alexei Ward"
 										value={formData.name}
-										onChange={(e) =>
-											setFormData({ ...formData, name: e.target.value })
-										}
+										onChange={handleInputChange}
 										className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
 									/>
 								</div>
@@ -142,12 +175,11 @@ export default function CheckoutPage() {
 									</label>
 									<input
 										type="email"
+										name="email"
 										required
 										placeholder="alexei@mail.com"
 										value={formData.email}
-										onChange={(e) =>
-											setFormData({ ...formData, email: e.target.value })
-										}
+										onChange={handleInputChange}
 										className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
 									/>
 								</div>
@@ -158,12 +190,11 @@ export default function CheckoutPage() {
 									</label>
 									<input
 										type="tel"
+										name="phone"
 										required
 										placeholder="+1 202-555-0136"
 										value={formData.phone}
-										onChange={(e) =>
-											setFormData({ ...formData, phone: e.target.value })
-										}
+										onChange={handleInputChange}
 										className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
 									/>
 								</div>
@@ -183,12 +214,11 @@ export default function CheckoutPage() {
 									</label>
 									<input
 										type="text"
+										name="address"
 										required
 										placeholder="1137 Williams Avenue"
 										value={formData.address}
-										onChange={(e) =>
-											setFormData({ ...formData, address: e.target.value })
-										}
+										onChange={handleInputChange}
 										className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
 									/>
 								</div>
@@ -200,12 +230,11 @@ export default function CheckoutPage() {
 										</label>
 										<input
 											type="text"
+											name="zip"
 											required
 											placeholder="10001"
 											value={formData.zip}
-											onChange={(e) =>
-												setFormData({ ...formData, zip: e.target.value })
-											}
+											onChange={handleInputChange}
 											className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
 										/>
 									</div>
@@ -214,12 +243,11 @@ export default function CheckoutPage() {
 										<label className="block text-xs font-bold mb-2">City</label>
 										<input
 											type="text"
+											name="city"
 											required
 											placeholder="New York"
 											value={formData.city}
-											onChange={(e) =>
-												setFormData({ ...formData, city: e.target.value })
-											}
+											onChange={handleInputChange}
 											className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
 										/>
 									</div>
@@ -230,12 +258,11 @@ export default function CheckoutPage() {
 										</label>
 										<input
 											type="text"
+											name="country"
 											required
 											placeholder="United States"
 											value={formData.country}
-											onChange={(e) =>
-												setFormData({ ...formData, country: e.target.value })
-											}
+											onChange={handleInputChange}
 											className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
 										/>
 									</div>
@@ -263,7 +290,9 @@ export default function CheckoutPage() {
 											name="payment"
 											value="e-money"
 											checked={paymentMethod === "e-money"}
-											onChange={(e) => setPaymentMethod(e.target.value)}
+											onChange={(e) =>
+												setPaymentMethod(e.target.value as PaymentMethod)
+											}
 											className="accent-orange-600"
 										/>
 										<span className="text-sm font-bold">e-Money</span>
@@ -275,7 +304,9 @@ export default function CheckoutPage() {
 											name="payment"
 											value="cash"
 											checked={paymentMethod === "cash"}
-											onChange={(e) => setPaymentMethod(e.target.value)}
+											onChange={(e) =>
+												setPaymentMethod(e.target.value as PaymentMethod)
+											}
 											className="accent-orange-600"
 										/>
 										<span className="text-sm font-bold">Cash on Delivery</span>
@@ -291,15 +322,11 @@ export default function CheckoutPage() {
 										</label>
 										<input
 											type="text"
+											name="eMoneyNumber"
 											required
 											placeholder="238521993"
 											value={formData.eMoneyNumber}
-											onChange={(e) =>
-												setFormData({
-													...formData,
-													eMoneyNumber: e.target.value,
-												})
-											}
+											onChange={handleInputChange}
 											className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
 										/>
 									</div>
@@ -310,12 +337,11 @@ export default function CheckoutPage() {
 										</label>
 										<input
 											type="text"
+											name="eMoneyPin"
 											required
 											placeholder="6891"
 											value={formData.eMoneyPin}
-											onChange={(e) =>
-												setFormData({ ...formData, eMoneyPin: e.target.value })
-											}
+											onChange={handleInputChange}
 											className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-orange-600"
 										/>
 									</div>

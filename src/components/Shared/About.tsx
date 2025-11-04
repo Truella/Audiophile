@@ -3,7 +3,7 @@ import React from "react";
 
 export default function About() {
 	return (
-		<section className="my-[200px] flex justify-between gap-[125px] items-center">
+		<section className="border my-[200px] flex justify-between gap-[125px] items-center">
 			<div>
 				<h2 className="text-h2 mb-8">
 					{" "}

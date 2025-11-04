@@ -25,49 +25,51 @@ export default async function ProductDetails({ params }) {
 	return (
 		<>
 			<HeroSection></HeroSection>
-			<div className="min-h-screen max-w-[1110px] mx-auto">
+			<div className="min-h-screen w-[80%] max-w-[1110px] mx-auto">
 				{/* Back Navigation */}
-				<div className="max-w-6xl mx-auto px-6 py-8">
+				<div className="mt-20">
 					<Link
 						href={`/${category}`}
-						className="text-gray-600 hover:text-gray-900 text-sm"
+						className="text-black/50 transition-all duration-300 ease-in hover:text-gray-900 text-subtitle"
 					>
 						Go back
 					</Link>
 				</div>
 
 				{/* Product Header Section */}
-				<div className="max-w-6xl mx-auto px-6 pb-16">
+				<div className="mt-14">
 					<CategoryProductContainer
 						name={product.name}
 						description={product.description}
 						newTag={product.new}
 						image={product.image.desktop}
 						slug={slug}
+						price={product.price}
+						product={product}
 					/>
 				</div>
 
 				{/* Features and In The Box Section */}
-				<div className="max-w-6xl mx-auto px-6 pb-16">
-					<div className="grid md:grid-cols-5 gap-12">
+				<div className="mx-auto my-[120px]">
+					<div className="flex gap-[125px]">
 						{/* Features */}
-						<div className="md:col-span-3 space-y-6">
-							<h2 className="text-3xl font-bold uppercase">Features</h2>
-							<div className="text-gray-600 leading-relaxed whitespace-pre-line">
+						<div className="max-w-[635px]">
+							<h3 className="text-h3 uppercase mb-8">Features</h3>
+							<div className="text-body text-black/50 leading-relaxed whitespace-pre-line">
 								{product.features}
 							</div>
 						</div>
 
 						{/* In The Box */}
 						<div className="md:col-span-2 space-y-6">
-							<h2 className="text-3xl font-bold uppercase">In The Box</h2>
+							<h2 className="text-h3 mb-8 uppercase">In The Box</h2>
 							<ul className="space-y-2">
 								{product.includes?.map((item, index) => (
 									<li key={index} className="flex gap-4">
 										<span className="text-orange-600 font-bold w-8">
 											{item.quantity}x
 										</span>
-										<span className="text-gray-600">{item.item}</span>
+										<span className="text-body text-black/50">{item.item}</span>
 									</li>
 								))}
 							</ul>
@@ -77,35 +79,35 @@ export default async function ProductDetails({ params }) {
 
 				{/* Gallery Section */}
 				{product.gallery && (
-					<div className="max-w-6xl mx-auto px-6 pb-16">
-						<div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-							<div className="md:col-span-2 space-y-4">
-								<div className="relative aspect-square rounded-lg overflow-hidden">
-									<Image
-										src={product.gallery.first.desktop}
-										alt="Gallery 1"
-										fill
-										className="object-cover"
-									/>
-								</div>
-								<div className="relative aspect-square rounded-lg overflow-hidden">
-									<Image
-										src={product.gallery.second.desktop}
-										alt="Gallery 2"
-										fill
-										className="object-cover"
-									/>
-								</div>
+					<div className="max-h-[592px] lg:h-[592px] md:h-[368px] mx-auto grid grid-cols-[1fr_57.5%] grid-rows-2 gap-[30px]">
+						<div className="overflow-hidden rounded-lg">
+							<div className="relative aspect-square rounded-lg overflow-hidden">
+								<Image
+									src={product.gallery.first.desktop}
+									alt="Gallery 1"
+									fill
+									className="object-cover"
+								/>
 							</div>
-							<div className="md:col-span-3 col-span-2">
-								<div className="relative w-full h-full rounded-lg overflow-hidden">
-									<Image
-										src={product.gallery.third.desktop}
-										alt="Gallery 3"
-										fill
-										className="object-cover"
-									/>
-								</div>
+						</div>
+						<div className="overflow-hidden row-span-2">
+							<div className="relative w-full h-full rounded-lg overflow-hidden">
+								<Image
+									src={product.gallery.third.desktop}
+									alt="Gallery 3"
+									fill
+									className="object-cover"
+								/>
+							</div>
+						</div>
+						<div className="overflow-hidden rounded-lg">
+							<div className="relative aspect-square rounded-lg overflow-hidden">
+								<Image
+									src={product.gallery.second.desktop}
+									alt="Gallery 2"
+									fill
+									className="object-cover"
+								/>
 							</div>
 						</div>
 					</div>
@@ -113,14 +115,14 @@ export default async function ProductDetails({ params }) {
 
 				{/* You May Also Like Section */}
 				{product.others && (
-					<div className="max-w-6xl mx-auto px-6 pb-24">
+					<div className="my-[120px] mx-auto overflow-hidden">
 						<h2 className="text-3xl font-bold uppercase text-center mb-12">
 							You May Also Like
 						</h2>
 						<div className="grid md:grid-cols-3 gap-8">
 							{product.others.map((item) => (
 								<div key={item.slug} className="text-center space-y-6">
-									<div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden">
+									<div className="relative aspect-square bg-off-white rounded-lg overflow-hidden">
 										<Image
 											src={item.image.desktop}
 											alt={item.name}
@@ -130,7 +132,7 @@ export default async function ProductDetails({ params }) {
 									</div>
 									<h3 className="text-2xl font-bold uppercase">{item.name}</h3>
 									<Link href={`/${category}/${item.slug}`}>
-										<button className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 font-bold uppercase tracking-wider transition">
+										<button className="bg-primary hover:bg-primary-light text-subtitle px-8 py-3 text-white uppercase tracking-wider transition-all duration-300 ease-in">
 											See Product
 										</button>
 									</Link>
@@ -141,7 +143,7 @@ export default async function ProductDetails({ params }) {
 				)}
 
 				{/* Bottom Category Navigation */}
-				<CategoryDisplaySection/>
+				<CategoryDisplaySection />
 
 				{/* Best Audio Gear Section */}
 				<About />
