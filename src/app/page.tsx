@@ -23,7 +23,7 @@ export default function Home() {
 					</div>
 					<div className="w-[472px] h-[472px] rounded-[50%] border border-white absolute left-[87px] top-[200px]"></div>
 					<div className="absolute left-[117.49px] h-[493px] top-[97px]">
-						<Image src={"/assets/shared/zx9.png"} width={410.23} height={493} />
+						<Image src={"/assets/shared/zx9.png"} width={410.23} height={493}  alt="zx9"/>
 					</div>
 					<div className=" w-[349px] h-[303px] absolute left-[670px] top-[133px]">
 						<h1 className="text-h1 mb-6 text-white">ZX9 SPEAKER</h1>
@@ -63,6 +63,7 @@ export default function Home() {
 							src={"/assets/home/desktop/image-earphones-yx1.jpg"}
 							width={540}
 							height={320}
+							alt="image of earphone"
 						/>
 					</div>
 					<div className="bg-off-white rounded-lg flex-1 flex items-center">

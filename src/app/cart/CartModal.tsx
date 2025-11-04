@@ -58,7 +58,7 @@ export default function CartModal() {
 						<div className="space-y-4 max-h-64 overflow-y-auto mb-6">
 							{cart.map((item) => (
 								<div key={item.productId} className="flex items-center gap-4">
-									<div className="relative w-16 h-16 bg-gray-100 rounded overflow-hidden flex-shrink-0">
+									<div className="relative w-16 h-16 bg-gray-100 rounded overflow-hidden shrink-0">
 										<Image
 											src={item.image}
 											alt={item.name}
