@@ -23,6 +23,7 @@ export default function Header() {
 				src={"/assets/shared/desktop/logo.svg"}
 				width={100}
 				height={100}
+				alt="audiophile logo"
 			/>
 
 			<Nav isOpen={isOpen} onClose={() => setIsOpen((prev) => !prev)} />
