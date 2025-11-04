@@ -57,10 +57,10 @@ export default function CartModal() {
 						{/* Cart Items */}
 						<div className="space-y-4 max-h-64 overflow-y-auto mb-6">
 							{cart.map((item) => (
-								<div key={item.id} className="flex items-center gap-4">
+								<div key={item.productId} className="flex items-center gap-4">
 									<div className="relative w-16 h-16 bg-gray-100 rounded overflow-hidden flex-shrink-0">
 										<Image
-											src={item.image?.desktop || item.categoryImage?.desktop}
+											src={item.image}
 											alt={item.name}
 											fill
 											className="object-contain p-2"
@@ -82,7 +82,9 @@ export default function CartModal() {
 									{/* Quantity Controls */}
 									<div className="flex items-center bg-gray-100">
 										<button
-											onClick={() => updateQuantity(item.id, item.quantity - 1)}
+											onClick={() =>
+												updateQuantity(item.productId, item.quantity - 1)
+											}
 											className="px-3 py-2 hover:bg-gray-200 text-gray-600"
 										>
 											−
@@ -91,7 +93,9 @@ export default function CartModal() {
 											{item.quantity}
 										</span>
 										<button
-											onClick={() => updateQuantity(item.id, item.quantity + 1)}
+											onClick={() =>
+												updateQuantity(item.productId, item.quantity + 1)
+											}
 											className="px-3 py-2 hover:bg-gray-200 text-gray-600"
 										>
 											+
