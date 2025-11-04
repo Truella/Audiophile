@@ -7,7 +7,7 @@ const SHOPITEMPROPS = [
 ];
 export default function CategoryDisplaySection() {
 	return (
-		<section className="border my-[92px] lg:my-0 flex flex-col lg:flex-row shrink-0 justify-between gap-[30px] items-center">
+		<section className="my-[92px] lg:my-0 flex flex-col lg:flex-row shrink-0 justify-between gap-[30px] items-center">
 			{SHOPITEMPROPS.map((item) => (
 				<ShopItemContainer key={item.text} text={item.text} imgUrl={item.url} />
 			))}
