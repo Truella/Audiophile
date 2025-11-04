@@ -24,7 +24,7 @@ export default function CategoryProductContainer({
 				<h1 className="text-h1 mt-4">{name}</h1>
 				<p className="text-black/50 text-body mt-8">{description}</p>
 				<Link href={`/${category}/${slug}`}>
-					<button className="bg-primary-light w-40 py-3 mt-10 cursor-pointer">
+					<button className="bg-primary transition-all duration-300 ease-in hover:bg-primary-light w-40 py-3 mt-10 cursor-pointer">
 						SEE PRODUCT
 					</button>
 				</Link>
