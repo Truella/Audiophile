@@ -6,7 +6,7 @@ import React from "react";
 export default function Nav({ isOpen, onClose }) {
 	const pathname = usePathname();
 
-	const navItems = [
+const navItems = [
 		{ name: "HOME", path: "/" },
 		{ name: "HEADPHONES", path: "/headphones" },
 		{ name: "SPEAKERS", path: "/speakers" },

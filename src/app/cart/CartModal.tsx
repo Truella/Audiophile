@@ -34,12 +34,12 @@ export default function CartModal() {
 		<>
 			{/* Backdrop */}
 			<div
-				className="fixed inset-0 bg-black bg-opacity-50 z-40"
+				className="fixed inset-0 bg-black/60 z-40"
 				onClick={() => setIsCartOpen(false)}
 			/>
 
 			{/* Modal */}
-			<div className="fixed top-24 right-4 md:right-8 lg:right-24 w-full max-w-md bg-white rounded-lg p-6 z-50 shadow-2xl">
+			<div className="fixed top-24 right-4 md:right-8 lg:right-24 w-[90%] max-w-[377px] mt-8 bg-white rounded-lg p-6 z-50 shadow-2xl">
 				<div className="flex justify-between items-center mb-6">
 					<h2 className="text-lg font-bold uppercase">Cart ({cart.length})</h2>
 					<button
@@ -115,7 +115,7 @@ export default function CartModal() {
 
 						{/* Checkout Button */}
 						<Link href="/checkout" onClick={() => setIsCartOpen(false)}>
-							<button className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 font-bold uppercase tracking-wider transition">
+							<button className="w-full bg-primary hover:bg-primary-light text-white py-3 font-bold uppercase tracking-wider transition-all duration-300 ease-in">
 								Checkout
 							</button>
 						</Link>
