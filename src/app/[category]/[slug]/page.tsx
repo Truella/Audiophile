@@ -6,6 +6,7 @@ import About from "@/components/Shared/About";
 import CategoryProductContainer from "@/components/Shared/ProductDataWithPrice";
 import HeroSection from "@/components/layout/HeroSection";
 import CategoryDisplaySection from "@/components/Shared/CategoryDisplaySection";
+import GoBackLink from "@/components/Shared/GoBAckLink";
 
 export async function generateStaticParams() {
 	const products = getAllProducts();
@@ -27,17 +28,9 @@ export default async function ProductDetails({ params }) {
 			<HeroSection></HeroSection>
 			<div className="min-h-screen w-[80%] max-w-[1110px] mx-auto">
 				{/* Back Navigation */}
-				<div className="mt-20">
-					<Link
-						href={`/${category}`}
-						className="text-black/50 transition-all duration-300 ease-in hover:text-gray-900 text-subtitle"
-					>
-						Go back
-					</Link>
-				</div>
-
+				<GoBackLink path={category} />
 				{/* Product Header Section */}
-				<div className="mt-14">
+				<div className="mt-6 lg:mt-14">
 					<CategoryProductContainer
 						name={product.name}
 						description={product.description}
@@ -51,7 +44,7 @@ export default async function ProductDetails({ params }) {
 
 				{/* Features and In The Box Section */}
 				<div className="mx-auto my-[120px]">
-					<div className="flex gap-[125px]">
+					<div className="flex gap-[125px] flex-col lg:flex-row">
 						{/* Features */}
 						<div className="max-w-[635px]">
 							<h3 className="text-h3 uppercase mb-8">Features</h3>
@@ -61,7 +54,7 @@ export default async function ProductDetails({ params }) {
 						</div>
 
 						{/* In The Box */}
-						<div className="md:col-span-2 space-y-6">
+						<div className=" md:flex md:gap-[164px] lg:block">
 							<h2 className="text-h3 mb-8 uppercase">In The Box</h2>
 							<ul className="space-y-2">
 								{product.includes?.map((item, index) => (
@@ -79,7 +72,7 @@ export default async function ProductDetails({ params }) {
 
 				{/* Gallery Section */}
 				{product.gallery && (
-					<div className="max-h-[592px] lg:h-[592px] md:h-[368px] mx-auto grid grid-cols-[1fr_57.5%] grid-rows-2 gap-[30px]">
+					<div className="not-sm:h-[756px] md:max-h-[592px] lg:h-[592px] md:h-[368px] mx-auto grid not-sm:grid-rows-4 not-sm:grid-cols-1 grid-cols-[1fr_57.5%] grid-rows-2 md:gap-[18px] gap-[30px]">
 						<div className="overflow-hidden rounded-lg">
 							<div className="relative aspect-square rounded-lg overflow-hidden">
 								<Image
@@ -90,7 +83,7 @@ export default async function ProductDetails({ params }) {
 								/>
 							</div>
 						</div>
-						<div className="overflow-hidden row-span-2">
+						<div className="overflow-hidden row-span-2 ">
 							<div className="relative w-full h-full rounded-lg overflow-hidden">
 								<Image
 									src={product.gallery.third.desktop}
@@ -100,7 +93,7 @@ export default async function ProductDetails({ params }) {
 								/>
 							</div>
 						</div>
-						<div className="overflow-hidden rounded-lg">
+						<div className="overflow-hidden rounded-lg row-start-2 row-end-3">
 							<div className="relative aspect-square rounded-lg overflow-hidden">
 								<Image
 									src={product.gallery.second.desktop}
