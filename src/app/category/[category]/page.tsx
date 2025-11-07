@@ -17,7 +17,6 @@ export default function HeadphonesPage() {
                 <CategoryHero text={category} />
             </HeroSection>
             <section className="w-[90%] max-w-[1110px] mx-auto">
-                <GoBackLink /> 
                 {CATEGORYDATA.reverse().map((category, index) => (
                     <CategoryProductContainer
                         key={category.id}
