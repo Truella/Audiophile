@@ -28,7 +28,7 @@ export default async function ProductDetails({ params }) {
 			<HeroSection></HeroSection>
 			<div className="min-h-screen w-[80%] max-w-[1110px] mx-auto">
 				{/* Back Navigation */}
-				<GoBackLink path={category} />
+				<GoBackLink />
 				{/* Product Header Section */}
 				<div className="mt-6 lg:mt-14">
 					<CategoryProductContainer

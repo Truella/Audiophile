@@ -27,7 +27,7 @@ export default function HomeHeroSection() {
 					width={709}
 					height={886}
 					alt="hero iamge"
-					className="hidden lg:block"
+					className="hidden lg:block  mask-[linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
 				/>
 
 				<Image

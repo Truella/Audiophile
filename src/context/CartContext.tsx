@@ -10,7 +10,7 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 
 // Types
-interface CartItem {
+export interface CartItem {
 	productId: number;
 	slug: string;
 	name: string;
