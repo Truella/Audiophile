@@ -22,7 +22,7 @@ export default function ShopItemContainer({ imgUrl, text }) {
 			</div>
 			<h6 className="text-h6">{text}</h6>
 			<p className="text-bold text-[13px] flex justify-center items-center gap-2">
-				SHOP{" "}
+				<span className="text-black/50 text-subtitle hover:text-primary transition-all duration-300 ease-in cursor-pointer">SHOP</span>{" "}
 				<span>
 					<img src="/assets/shared/desktop/icon-arrow-right.svg" alt="" />
 				</span>

@@ -7,11 +7,11 @@ export default function Nav({ isOpen, onClose }) {
 	const pathname = usePathname();
 
 const navItems = [
-		{ name: "HOME", path: "/" },
-		{ name: "HEADPHONES", path: "/headphones" },
-		{ name: "SPEAKERS", path: "/speakers" },
-		{ name: "EARPHONES", path: "/earphones" },
-	];
+	{ name: "HOME", path: "/" },
+	{ name: "HEADPHONES", path: "/category/headphones" },
+	{ name: "SPEAKERS", path: "/category/speakers" },
+	{ name: "EARPHONES", path: "/category/earphones" },
+];
 
 	const handleLinkClick = () => {
 		if (onClose) onClose();

@@ -1,33 +1,132 @@
+# Audiophile E-commerce Website
 
-First, run the development server:
+An e-commerce website built with Next.js, featuring a complete checkout flow
+with backend integration and automated email notifications.
+
+## Links
+
+- **Live Site**: [[Audiophile Live](https://audiophile-orpin-three.vercel.app/)]
+- **Repository**:
+  [[Audiophile Repo](https://audiophile-orpin-three.vercel.app/)]
+
+## 📋 Project Overview
+
+This is a fully functional e-commerce website for audio equipment, built to
+match the
+[[Figma](https://www.figma.com/design/AmgZwl5xWRzbmXcoy7J10K/audiophile-ecommerce-website--Copy-?node-id=0-1&p=f&t=3KoF09OCCVTH8lsK-0)]
+design specifications. The project includes a complete shopping experience from
+browsing products to receiving order confirmation emails.
+
+### Key Features
+
+- ✨ Responsive design (mobile, tablet, desktop)
+- 🛒 Full shopping cart functionality
+- 💳 Complete checkout flow with validation
+- 📧 Automated order confirmation emails
+- 💾 Backend order storage with Convex
+- ♿ Accessible forms and navigation
+- 🎨 Modern UI with smooth animations
+
+## 🛠 Tech Stack
+
+- **Frontend**: Next.js 14 (App Router), React 18, TypeScript
+- **Styling**: Tailwind CSS
+- **Backend**: Convex
+- **Email**: NodeMailer
+- **Deployment**: Vercel
+
+## 📦 Installation & Setup
+
+### Prerequisites
+
+- Node.js 18+ installed
+- npm or yarn package manager
+- Convex account ([convex.dev](https://convex.dev))
+
+### Step 1: Clone the Repository
+
+```bash
+git clone [https://github.com/Truella/Audiophile.git]
+cd audiophile-ecommerce
+```
+
+### Step 2: Install Dependencies
+
+```bash
+npm install
+# or
+yarn install
+```
+
+### Step 3: Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```env
+# Convex
+NEXT_PUBLIC_CONVEX_URL=your_convex_url
+CONVEX_DEPLOYMENT=your_convex_deployment
+EMAIL_USER=your_registered_mail
+EMAIL_PASSWORD=app_password
+
+```
+
+### Step 4: Set Up Convex
+
+```bash
+# Initialize Convex
+npx convex dev
+
+# Follow prompts to create/link your Convex project
+# This will populate your NEXT_PUBLIC_CONVEX_URL
+```
+
+### Step 6: Run Development Server
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Deploy to Vercel
 
-## Learn More
+```bash
+# Install Vercel CLI
+npm i -g vercel
 
-To learn more about Next.js, take a look at the following resources:
+# Deploy
+vercel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Deploy to production
+vercel --prod
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Environment Variables
 
-## Deploy on Vercel
+Add all environment variables from `.env.local` to your Vercel project:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Go to Project Settings > Environment Variables
+2. Add each variable
+3. Redeploy if needed
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Post-Deployment Checklist
+
+- [ ] All environment variables configured
+- [ ] Convex deployment is production-ready
+- [ ] Email sending tested
+- [ ] Checkout flow tested end-to-end
+- [ ] Responsive design verified on all devices
+
+## Known Issues / Limitations
+
+- Payment processing is simulated (no real payment gateway)
+- Inventory management not implemented
+- User accounts not included in this version
+- Order tracking is placeholder functionality
+
+---

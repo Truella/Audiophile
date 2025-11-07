@@ -3,8 +3,7 @@ import { v } from "convex/values";
 
 export default defineSchema({
 	carts: defineTable({
-		userId: v.optional(v.string()), // For authenticated users
-		sessionId: v.string(), // For guest users
+		sessionId: v.string(), 
 		items: v.array(
 			v.object({
 				productId: v.number(),
