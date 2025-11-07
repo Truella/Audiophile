@@ -1,7 +1,9 @@
+"use client";
 import { FormData, PaymentMethod } from "@/app/checkout/page";
 import { CartItem } from "@/context/CartContext";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
+
 interface CheckOutFormProps {
 	formData: FormData;
 	paymentMethod: PaymentMethod;
@@ -14,6 +16,7 @@ interface CheckOutFormProps {
 	vat: number;
 	grandTotal: number;
 	subtotal: number;
+	errors: { [key: string]: string };
 }
 
 export default function CheckOutForm({
@@ -28,12 +31,18 @@ export default function CheckOutForm({
 	vat,
 	grandTotal,
 	subtotal,
-}:CheckOutFormProps) {
+	errors
+}: CheckOutFormProps) {
+	
 	return (
-		<form onSubmit={handleSubmit} className="grid lg:grid-cols-3 gap-8 mt-8">
+		<form
+			onSubmit={handleSubmit}
+			className="grid lg:grid-cols-3 gap-8 mt-8"
+		>
 			{/* Checkout Form */}
 			<div className="lg:col-span-2 bg-white rounded-lg p-8 space-y-8">
 				<h1 className="text-3xl font-bold uppercase">Checkout</h1>
+
 				{/* Billing Details */}
 				<div className="space-y-4">
 					<h2 className="text-primary text-sm font-bold uppercase tracking-wider">
@@ -42,14 +51,20 @@ export default function CheckOutForm({
 					<div className="grid md:grid-cols-2 gap-4">
 						<div>
 							<label className="block text-xs font-bold mb-2">Name</label>
+							{errors.name && (
+								<p className="text-xs text-red-500 font-semibold">
+									{errors.name}
+								</p>
+							)}
 							<input
 								type="text"
 								name="name"
-								required
 								placeholder="Alexei Ward"
 								value={formData.name}
 								onChange={handleInputChange}
-								className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary-light"
+								className={`w-full px-4 py-3 border rounded focus:outline-none ${
+									errors.name ? "border-red-500" : "border-gray-300"
+								}`}
 							/>
 						</div>
 
@@ -57,14 +72,20 @@ export default function CheckOutForm({
 							<label className="block text-xs font-bold mb-2">
 								Email Address
 							</label>
+							{errors.email && (
+								<p className="text-xs text-red-500 font-semibold">
+									{errors.email}
+								</p>
+							)}
 							<input
 								type="email"
 								name="email"
-								required
 								placeholder="alexei@mail.com"
 								value={formData.email}
 								onChange={handleInputChange}
-								className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary-light"
+								className={`w-full px-4 py-3 border rounded focus:outline-none ${
+									errors.email ? "border-red-500" : "border-gray-300"
+								}`}
 							/>
 						</div>
 
@@ -72,14 +93,20 @@ export default function CheckOutForm({
 							<label className="block text-xs font-bold mb-2">
 								Phone Number
 							</label>
+							{errors.phone && (
+								<p className="text-xs text-red-500 font-semibold">
+									{errors.phone}
+								</p>
+							)}
 							<input
 								type="tel"
 								name="phone"
-								required
 								placeholder="+1 202-555-0136"
 								value={formData.phone}
 								onChange={handleInputChange}
-								className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary-light"
+								className={`w-full px-4 py-3 border rounded focus:outline-none ${
+									errors.phone ? "border-red-500" : "border-gray-300"
+								}`}
 							/>
 						</div>
 					</div>
@@ -94,54 +121,78 @@ export default function CheckOutForm({
 					<div className="space-y-4">
 						<div>
 							<label className="block text-xs font-bold mb-2">Address</label>
+							{errors.address && (
+								<p className="text-xs text-red-500 font-semibold">
+									{errors.address}
+								</p>
+							)}
 							<input
 								type="text"
 								name="address"
-								required
 								placeholder="1137 Williams Avenue"
 								value={formData.address}
 								onChange={handleInputChange}
-								className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary-light"
+								className={`w-full px-4 py-3 border rounded focus:outline-none ${
+									errors.address ? "border-red-500" : "border-gray-300"
+								}`}
 							/>
 						</div>
 
 						<div className="grid md:grid-cols-2 gap-4">
 							<div>
 								<label className="block text-xs font-bold mb-2">ZIP Code</label>
+								{errors.zip && (
+									<p className="text-xs text-red-500 font-semibold">
+										{errors.zip}
+									</p>
+								)}
 								<input
 									type="text"
 									name="zip"
-									required
 									placeholder="10001"
 									value={formData.zip}
 									onChange={handleInputChange}
-									className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary-light"
+									className={`w-full px-4 py-3 border rounded focus:outline-none ${
+										errors.zip ? "border-red-500" : "border-gray-300"
+									}`}
 								/>
 							</div>
 
 							<div>
 								<label className="block text-xs font-bold mb-2">City</label>
+								{errors.city && (
+									<p className="text-xs text-red-500 font-semibold">
+										{errors.city}
+									</p>
+								)}
 								<input
 									type="text"
 									name="city"
-									required
 									placeholder="New York"
 									value={formData.city}
 									onChange={handleInputChange}
-									className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary-light"
+									className={`w-full px-4 py-3 border rounded focus:outline-none ${
+										errors.city ? "border-red-500" : "border-gray-300"
+									}`}
 								/>
 							</div>
 
 							<div>
 								<label className="block text-xs font-bold mb-2">Country</label>
+								{errors.country && (
+									<p className="text-xs text-red-500 font-semibold">
+										{errors.country}
+									</p>
+								)}
 								<input
 									type="text"
 									name="country"
-									required
 									placeholder="United States"
 									value={formData.country}
 									onChange={handleInputChange}
-									className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary-light"
+									className={`w-full px-4 py-3 border rounded focus:outline-none ${
+										errors.country ? "border-red-500" : "border-gray-300"
+									}`}
 								/>
 							</div>
 						</div>
@@ -155,14 +206,18 @@ export default function CheckOutForm({
 					</h2>
 
 					<div className="grid md:grid-cols-2 gap-4">
+						{" "}
 						<div>
+							{" "}
 							<label className="block text-xs font-bold mb-2">
-								Payment Method
-							</label>
-						</div>
-
+								{" "}
+								Payment Method{" "}
+							</label>{" "}
+						</div>{" "}
 						<div className="space-y-2">
+							{" "}
 							<label className="flex items-center gap-3 px-4 py-3 border border-gray-300 rounded cursor-pointer hover:border-primary-light">
+								{" "}
 								<input
 									type="radio"
 									name="payment"
@@ -172,11 +227,11 @@ export default function CheckOutForm({
 										setPaymentMethod(e.target.value as PaymentMethod)
 									}
 									className="accent-primary-light"
-								/>
-								<span className="text-sm font-bold">e-Money</span>
-							</label>
-
+								/>{" "}
+								<span className="text-sm font-bold">e-Money</span>{" "}
+							</label>{" "}
 							<label className="flex items-center gap-3 px-4 py-3 border border-gray-300 rounded cursor-pointer hover:border-primary-light">
+								{" "}
 								<input
 									type="radio"
 									name="payment"
@@ -186,10 +241,10 @@ export default function CheckOutForm({
 										setPaymentMethod(e.target.value as PaymentMethod)
 									}
 									className="accent-primary-light"
-								/>
-								<span className="text-sm font-bold">Cash on Delivery</span>
-							</label>
-						</div>
+								/>{" "}
+								<span className="text-sm font-bold">Cash on Delivery</span>{" "}
+							</label>{" "}
+						</div>{" "}
 					</div>
 
 					{paymentMethod === "e-money" && (
@@ -198,14 +253,20 @@ export default function CheckOutForm({
 								<label className="block text-xs font-bold mb-2">
 									e-Money Number
 								</label>
+								{errors.eMoneyNumber && (
+									<p className="text-xs text-red-500 font-semibold">
+										{errors.eMoneyNumber}
+									</p>
+								)}
 								<input
 									type="text"
 									name="eMoneyNumber"
-									required
 									placeholder="238521993"
 									value={formData.eMoneyNumber}
 									onChange={handleInputChange}
-									className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary-light"
+									className={`w-full px-4 py-3 border rounded focus:outline-none ${
+										errors.eMoneyNumber ? "border-red-500" : "border-gray-300"
+									}`}
 								/>
 							</div>
 
@@ -213,24 +274,30 @@ export default function CheckOutForm({
 								<label className="block text-xs font-bold mb-2">
 									e-Money PIN
 								</label>
+								{errors.eMoneyPin && (
+									<p className="text-xs text-red-500 font-semibold">
+										{errors.eMoneyPin}
+									</p>
+								)}
 								<input
 									type="text"
 									name="eMoneyPin"
-									required
 									placeholder="6891"
 									value={formData.eMoneyPin}
 									onChange={handleInputChange}
-									className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-primary-light"
+									className={`w-full px-4 py-3 border rounded focus:outline-none ${
+										errors.eMoneyPin ? "border-red-500" : "border-gray-300"
+									}`}
 								/>
 							</div>
 						</div>
 					)}
-
 					{paymentMethod === "cash" && (
-						<p className="text-gray-600 text-sm">
+						<p className="text-black/50 text-sm">
+							{" "}
 							The 'Cash on Delivery' option enables you to pay in cash when our
 							delivery courier arrives at your residence. Just make sure your
-							address is correct so that your order will not be cancelled.
+							address is correct so that your order will not be cancelled.{" "}
 						</p>
 					)}
 				</div>

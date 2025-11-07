@@ -30,6 +30,7 @@ export default function CheckoutPage() {
 	const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("e-money");
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 	const [orderNumber, setOrderNumber] = useState<string>("");
+	const [errors, setErrors] = useState<{ [key: string]: string }>({});
 	const [confirmedOrder, setConfirmedOrder] = useState<{
 		items: typeof cart;
 		total: number;
@@ -52,11 +53,36 @@ export default function CheckoutPage() {
 	const shipping = 50;
 	const vat = Math.round(subtotal * 0.2);
 	const grandTotal = subtotal + shipping;
+	// Basic validation before submission
+	const validateForm = () => {
+		const newErrors: { [key: string]: string } = {};
 
+		if (!formData.name.trim()) newErrors.name = "Name is required";
+		if (!formData.email.trim()) newErrors.email = "Email is required";
+		else if (!/\S+@\S+\.\S+/.test(formData.email))
+			newErrors.email = "Enter a valid email address";
+		if (!formData.phone.trim()) newErrors.phone = "Phone number is required";
+		if (!formData.address.trim()) newErrors.address = "Address is required";
+		if (!formData.zip.trim()) newErrors.zip = "ZIP code is required";
+		if (!formData.city.trim()) newErrors.city = "City is required";
+		if (!formData.country.trim()) newErrors.country = "Country is required";
+
+		if (paymentMethod === "e-money") {
+			if (!formData.eMoneyNumber.trim())
+				newErrors.eMoneyNumber = "e-Money number is required";
+			if (!formData.eMoneyPin.trim())
+				newErrors.eMoneyPin = "e-Money PIN is required";
+		}
+
+		setErrors(newErrors);
+		return Object.keys(newErrors).length === 0;
+	};
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		setIsProcessing(true);
+		const isValid = validateForm();
+		if (!isValid) return;  // Stop here if validation fails
 
+		setIsProcessing(true);
 		try {
 			// Generate order number
 			const orderNum = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
@@ -128,6 +154,7 @@ export default function CheckoutPage() {
 
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
+		setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
 	};
 
 	if (cart.length === 0 && !showConfirmation) {
@@ -163,6 +190,7 @@ export default function CheckoutPage() {
 						paymentMethod={paymentMethod}
 						setPaymentMethod={setPaymentMethod}
 						shipping={shipping}
+						errors={errors}
 					/>
 				</div>
 				{/* Confirmation Modal */}
